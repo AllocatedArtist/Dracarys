@@ -18,7 +18,7 @@
 
 # Libraries
 *.lib
-*.a
+src/extern/*.a
 *.la
 *.lo
 
