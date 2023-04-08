@@ -23,7 +23,8 @@ $(BUILD_PATH)/dracarys_gl_buffer.o \
 $(BUILD_PATH)/dracarys_gl_clear.o \
 $(BUILD_PATH)/dracarys_gl_shader.o \
 $(BUILD_PATH)/dracarys_gl_vertex_array.o \
-$(BUILD_PATH)/log.o
+$(BUILD_PATH)/dracarys_gl_uniform.o \
+$(BUILD_PATH)/log.o \
 
 CUSTOM_FLAGS =  -D $(platform) -D $(graphics_api) -D LOG_USE_COLOR
 

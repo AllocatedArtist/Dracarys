@@ -10,6 +10,8 @@
 #define DRACARYS_YES_SHADER 1
 #define DRACARYS_NO_SHADER 0
 
+#define DRACARYS_UNIFORM_NO_LOCATION -1
+
 enum dracarys_glr_clear_flags {
     DRACARYS_GLR_CLEAR_COLOR = 16384,
     DRACARYS_GLR_CLEAR_STENCIL = 1024,
@@ -114,5 +116,21 @@ dracarys_glr_shader_t dracarys_glr_shader_create_full(const char* shader_path);
 void dracarys_glr_draw_arrays(enum dracarys_glr_draw_type type, unsigned int count);
 void dracarys_glr_draw_elements(enum dracarys_glr_draw_type mode, unsigned int count, enum dracarys_glr_attribute_type type, const void* indices);
 void dracarys_glr_viewport(int x, int y, int width, int height);
+
+/* 
+    No need to call this in a loop. Just retrieve the location once.
+    Returns DRACARYS_UNIFORM_NO_LOCATION if failed.
+*/
+int dracarys_glr_uniform_location(dracarys_glr_shader_t shader, const char* name);
+
+void dracarys_glr_uniform_i(int uniform_location,  int value);
+
+void dracarys_glr_uniform_f(int uniform_location,  float value);
+void dracarys_glr_uniform_f2(int uniform_location, float x, float y);
+void dracarys_glr_uniform_f3(int uniform_location, float x, float y, float z);
+void dracarys_glr_uniform_f4(int uniform_location, float x, float y, float z, float w);
+
+//TODO: Implement matrix uniform
+void dracarys_glr_uniform_mat4();
 
 #endif

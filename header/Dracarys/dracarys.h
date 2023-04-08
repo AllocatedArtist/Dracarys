@@ -158,6 +158,8 @@ int dracarys_platform_get_window_width(void);
 int dracarys_platform_get_window_height(void);
 int dracarys_platform_get_window_status(void);
 
+double dracarys_platform_time_since_initialize(void);
+
 #ifndef DRACARYS_NO_CUSTOM_MAIN
 
 #ifdef DRACARYS_PLATFORM_WINDOWS

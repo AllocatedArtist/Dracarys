@@ -27,7 +27,11 @@ static struct {
 
 //  ----------------CALLBACKS FOR GLFW--------------------------
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    Core.keys_list[key] = action;
+    if (action == GLFW_PRESS) {
+        Core.keys_list[key] = action;
+    } else if (action == GLFW_RELEASE) {
+        Core.keys_list[key] = action;
+    }
 }
 
 void window_resize_callback(GLFWwindow* window, int new_width, int new_height) {
@@ -50,7 +54,7 @@ int dracarys_platform_initialize(const char* title, int width, int height) {
     Core.width = width;
     Core.height = height;
 
-    #if defined(DRACARYS_LOG_WRITE) && !defined(PLATFORM_WEB)
+    #if defined(DRACARYS_LOG_WRITE) && defined(DRACARYS_PLATFORM_WINDOWS)
     Core.log_file = fopen("dracarys_log.txt", "w");
     if (Core.log_file == NULL) {
         DRACARYS_UTILITY_LOG_ERROR("UNABLE TO CREATE/OPEN LOG FILE\n");
@@ -63,7 +67,7 @@ int dracarys_platform_initialize(const char* title, int width, int height) {
             DRACARYS_UTILITY_LOG_INFO("Dracarys log file set\n");
         }
     }
-    #else
+    #elif defined(DRACARYS_PLATFORM_WEB)
     Core.log_file = NULL;
     #endif
 
@@ -154,4 +158,8 @@ int dracarys_platform_get_window_width(void) {
 
 int dracarys_platform_get_window_height(void) {
     return Core.height;
+}
+
+double dracarys_platform_time_since_initialize(void) {
+    return glfwGetTime();
 }
