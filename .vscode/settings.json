@@ -2,6 +2,20 @@
     "files.associations": {
         "utility.h": "c",
         "core.h": "c",
-        "utils.h": "c"
+        "utils.h": "c",
+        "emscripten.h": "c",
+        "glad.h": "c",
+        "glfw3.h": "c",
+        "dracarys_gl_impl.h": "c",
+        "chrono": "c",
+        "algorithm": "c",
+        "array": "c",
+        "compare": "c",
+        "functional": "c",
+        "ratio": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "dracarys.h": "c"
     }
 }

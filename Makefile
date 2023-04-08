@@ -1,6 +1,8 @@
+#graphics api = DRACARYS_USE_OPENGL
 
 CC = gcc
-platform = PLATFORM_WEB
+graphics_api = DRACARYS_USE_OPENGL
+platform = DRACARYS_PLATFORM_WINDOWS
 BUILD_PATH = build
 OPT = -O0
 
@@ -8,24 +10,28 @@ FLAGS = -Wall -Wextra \
 $(OPT) -pedantic \
 -std=c99 -g \
 
-HEADERS = -Iheader -Iheader/extern
+HEADERS = -Iheader/Dracarys -Iheader/Dracarys/extern
 
 OBJ := $(BUILD_PATH)/main.o \
-$(BUILD_PATH)/utility.o \
+$(BUILD_PATH)/dracarys_utility.o \
 $(BUILD_PATH)/glad.o \
-$(BUILD_PATH)/core.o \
-$(BUILD_PATH)/gl_render.o \
+$(BUILD_PATH)/dracarys_platform.o \
+$(BUILD_PATH)/dracarys_gl_draw.o \
+$(BUILD_PATH)/dracarys_gl_buffer.o \
+$(BUILD_PATH)/dracarys_gl_clear.o \
+$(BUILD_PATH)/dracarys_gl_shader.o \
+$(BUILD_PATH)/dracarys_gl_vertex_array.o \
 
-APP_NAME = Renderer
+APP_NAME = Dracarys
 APP = $(BUILD_PATH)/$(APP_NAME).exe
 
 
-vpath %.c src src/extern
-vpath %.h header
+vpath %.c src src/extern src/dracarys_gfx/dracarys_gl_backend
+vpath %.h header/Dracarys
 
 .PHONY: clean run
 
-ifeq ($(platform), PLATFORM_WINDOWS)
+ifeq ($(platform), DRACARYS_PLATFORM_WINDOWS)
 
 LIBS = -Lsrc/extern \
 -lglfw3 -lgdi32 -lmingw32 \
@@ -40,11 +46,11 @@ $(APP): $(OBJ)
 
 $(BUILD_PATH)/%.o: %.c
 	echo --Compiling: $< to $@--
-	gcc -c $< -D $(platform) $(HEADERS) -o $@
+	gcc -c $< -D $(platform) -D $(graphics_api) $(HEADERS) -o $@
 
 endif
 
-ifeq ($(platform), PLATFORM_WEB)
+ifeq ($(platform), DRACARYS_PLATFORM_WEB)
 
 SHADER_PATH = shaders/QuadWeb.txt
 
@@ -66,25 +72,25 @@ $(APP_NAME).html: $(OBJ)
 
 $(BUILD_PATH)/%.o: %.c
 	echo --COMPILING SRC--
-	emcc -c $< -D $(platform) $(HEADERS) 
+	emcc -c $< -D $(platform) -D $(graphics_api) $(HEADERS) 
 	mv *.o $(BUILD_PATH)
 
 endif
 
 run:
-ifeq ($(platform), PLATFORM_WINDOWS)
+ifeq ($(platform), DRACARYS_PLATFORM_WINDOWS)
 	$(APP)
 endif
-ifeq ($(platform), PLATFORM_WEB)
+ifeq ($(platform), DRACARYS_PLATFORM_WEB)
 	npx serve .
 	echo --OPEN BROWSER AND COPY/PASTE URL--
 endif
 
 clean:
 	echo --Cleaning-- 
-ifeq ($(platform), PLATFORM_WINDOWS)
+ifeq ($(platform), DRACARYS_PLATFORM_WINDOWS)
 	rm -f $(OBJ) $(APP)
 endif
-ifeq ($(platform), PLATFORM_WEB)
+ifeq ($(platform), DRACARYS_PLATFORM_WEB)
 	rm -f $(OBJ) $(BUILD_PATH)/*.data $(BUILD_PATH)/*.wasm $(BUILD_PATH)/*.js $(BUILD_PATH)/*.html 
 endif

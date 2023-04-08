@@ -1,6 +1,6 @@
-#include "../header/utility.h"
+#include "../header/Dracarys/dracarys_utility.h"
 
-char* utility_read_file_to_text(const char* filename) {
+char* dracarys_utility_read_file_to_text(const char* filename) {
     FILE* file = fopen(filename, "rb");
     if (file == NULL) {
         printf("Error opening: %s\n", filename);
@@ -11,7 +11,7 @@ char* utility_read_file_to_text(const char* filename) {
     long size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    char* text = malloc(size);
+    char* text = malloc(size + 1);
     if (text == NULL) {
         printf("Error allocating string. Can't open %s\n", filename);
         return NULL;
@@ -25,11 +25,13 @@ char* utility_read_file_to_text(const char* filename) {
 
     fclose(file);
 
+    text[size] = '\0';
+
     return text;
 }
 
-UtilityShaderFiles utility_read_shader(const char* filename) {
-    char* file = utility_read_file_to_text(filename);
+dracarys_utility_shader_files_t dracarys_utility_shader_files_create(const char* filename) {
+    char* file = dracarys_utility_read_file_to_text(filename);
 
     char* vertex_shader_text = strdup(strtok(file, "$"));
     char* fragment_shader_text = NULL;
@@ -41,15 +43,15 @@ UtilityShaderFiles utility_read_shader(const char* filename) {
     if (vertex_shader_text == NULL || fragment_shader_text == NULL) {
         printf("SHADER UNABLE TO BE READ [%s]\n", filename);
         free(file);
-        return (UtilityShaderFiles) { NULL, NULL };
+        return (dracarys_utility_shader_files_t) { NULL, NULL };
     }
 
     free(file);
-
-   return (UtilityShaderFiles) { .vertex_shader = vertex_shader_text, .fragment_shader = fragment_shader_text };
+    
+   return (dracarys_utility_shader_files_t) { .vertex_shader = vertex_shader_text, .fragment_shader = fragment_shader_text };
 }
 
-void utility_free_shader_files(UtilityShaderFiles* files) {
+void dracarys_utility_shader_files_delete(dracarys_utility_shader_files_t* files) {
     if (files->vertex_shader != NULL) 
         free(files->vertex_shader);
     if (files->fragment_shader != NULL) 
