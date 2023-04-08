@@ -21,7 +21,7 @@ int dracarys_glr_shader_check(dracarys_glr_shader_t shader, GLboolean check_vert
         char log[512];
         glGetShaderInfoLog(check_vertex == GL_TRUE ? shader.vertex_shader : shader.fragment_shader, 512, NULL, log);
         const char* type = check_vertex ? "VERTEX" : "FRAGMENT";
-        printf("%s SHADER UNABLE TO COMPILE:\n %s \n", type, log);
+        DRACARYS_UTILITY_LOG_ERROR("%s SHADER UNABLE TO COMPILE:\n %s \n", type, log);
         return GL_FALSE;
     }
 
@@ -36,7 +36,7 @@ int dracarys_glr_program_check(dracarys_glr_shader_t shader) {
     if (!success) {
         char log[512];
         glGetProgramInfoLog(shader.shader_program, 512, NULL, log);
-        printf("PROGRAM NOT LINKED:\n %s \n", log);
+        DRACARYS_UTILITY_LOG_ERROR("PROGRAM NOT LINKED:\n %s \n", log);
         return GL_FALSE;
     }
 
@@ -91,23 +91,25 @@ dracarys_glr_shader_t dracarys_glr_shader_create_full(const char* shader_path) {
     dracarys_utility_shader_files_t shader_file = dracarys_utility_shader_files_create(shader_path);
 
     if (dracarys_glr_vertex_shader_create(shader, shader_file.vertex_shader) == GL_FALSE) {
-        printf("ERROR MAKING VERTEX SHADER [%s]\n", shader_path);
+        DRACARYS_UTILITY_LOG_ERROR("ERROR MAKING VERTEX SHADER [%s]\n", shader_path);
         return (dracarys_glr_shader_t) { 0, 0, 0, .compilation_success = DRACARYS_NO_SHADER };
     }
 
     if (dracarys_glr_fragment_shader_create(shader, shader_file.fragment_shader) == GL_FALSE) {
-        printf("ERROR MAKING FRAGMENT SHADER [%s]\n", shader_path);
+        DRACARYS_UTILITY_LOG_ERROR("ERROR MAKING FRAGMENT SHADER [%s]\n", shader_path);
         return (dracarys_glr_shader_t) { 0, 0, 0, .compilation_success = DRACARYS_NO_SHADER };
     }
 
     if (dracarys_glr_shader_complete(shader) == GL_FALSE) {
-        printf("ERROR COMPLETING SHADER PROGRAM [%s]\n", shader_path);
+        DRACARYS_UTILITY_LOG_ERROR("ERROR COMPLETING SHADER PROGRAM [%s]\n", shader_path);
         return (dracarys_glr_shader_t) { 0, 0, 0, .compilation_success = DRACARYS_NO_SHADER };
     }
 
     dracarys_utility_shader_files_delete(&shader_file);
 
     shader.compilation_success = DRACARYS_YES_SHADER;
+
+    DRACARYS_UTILITY_LOG_INFO("Shader created successfully [%s]\n", shader_path);
 
     return shader;
 }

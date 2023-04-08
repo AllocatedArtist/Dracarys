@@ -165,6 +165,7 @@ int dracarys_platform_get_window_status(void);
 int main(void) {                                                                             \
     container c;                                                                             \
     if (dracarys_platform_initialize(title, width, height) == DRACARYS_INIT_FAILURE) {       \
+        DRACARYS_UTILITY_LOG_FATAL("COULD NOT INITIALIZE DRACARYS\n");                       \
         return -1;                                                                           \
     }                                                                                        \
     start(&c);                                                                               \
@@ -173,7 +174,9 @@ int main(void) {                                                                
         dracarys_platform_swap_buffers();                                                    \
     }                                                                                        \
     destroy(&c);                                                                             \
+    DRACARYS_UTILITY_LOG_INFO("Dracarys terminated\n");                                      \
     dracarys_platform_terminate();                                                           \
+                                                                                             \
     return 0;                                                                                \
 }                                                                               
 #elif defined(DRACARYS_PLATFORM_WEB) && defined(DRACARYS_USE_OPENGL) 
@@ -185,6 +188,7 @@ void loop(void) {                                                               
     dracarys_platform_poll_events();                                                          \
     if (dracarys_platform_get_window_status() == DRACARYS_WINDOW_CLOSED) {                    \
         destroy(&c);                                                                          \
+        DRACARYS_UTILITY_LOG_INFO("Dracarys terminated\n");                                   \
         dracarys_platform_terminate();                                                        \
         emscripten_cancel_main_loop();                                                        \
     }                                                                                         \
@@ -193,6 +197,7 @@ void loop(void) {                                                               
 }                                                                                             \
 int main(void) {                                                                              \
     if (dracarys_platform_initialize(title, width, height) == DRACARYS_INIT_FAILURE) {        \
+        DRACARYS_UTILITY_LOG_FATAL("COULD NOT INITIALIZE DRACARYS\n");                        \
         return -1;                                                                            \
     }                                                                                         \
     start(&c);                                                                                \

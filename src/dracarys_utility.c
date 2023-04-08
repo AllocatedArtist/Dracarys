@@ -1,9 +1,14 @@
 #include "../header/Dracarys/dracarys_utility.h"
 
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+
+
 char* dracarys_utility_read_file_to_text(const char* filename) {
     FILE* file = fopen(filename, "rb");
     if (file == NULL) {
-        printf("Error opening: %s\n", filename);
+        DRACARYS_UTILITY_LOG_ERROR("ERROR OPENING FILE [%s]\n", filename);
         return NULL;
     }
 
@@ -13,13 +18,13 @@ char* dracarys_utility_read_file_to_text(const char* filename) {
 
     char* text = malloc(size + 1);
     if (text == NULL) {
-        printf("Error allocating string. Can't open %s\n", filename);
+        DRACARYS_UTILITY_LOG_ERROR("ERROR ALLOCATING STRING [%s]\n", filename);
         return NULL;
     }
 
     const size_t num_elements = 1;
     if (fread(text, size, num_elements, file) != num_elements) {
-        printf("Error reading %s\n", filename);
+        DRACARYS_UTILITY_LOG_ERROR("ERROR READING FILE [%s]\n", filename);
         return NULL;
     }
 
@@ -41,7 +46,7 @@ dracarys_utility_shader_files_t dracarys_utility_shader_files_create(const char*
     }
 
     if (vertex_shader_text == NULL || fragment_shader_text == NULL) {
-        printf("SHADER UNABLE TO BE READ [%s]\n", filename);
+        DRACARYS_UTILITY_LOG_ERROR("SHADER UNABLE TO BE READ [%s]\n", filename);
         free(file);
         return (dracarys_utility_shader_files_t) { NULL, NULL };
     }

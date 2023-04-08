@@ -16,13 +16,13 @@
 #endif
 
 #include "../header/Dracarys/extern/GLFW/glfw3.h"
-#include <stdio.h>
 
 static struct {
     GLFWwindow* window;
     int width, height;
     const char* title;
     int keys_list[GLFW_KEY_LAST];
+    FILE* log_file;
 } Core;
 
 //  ----------------CALLBACKS FOR GLFW--------------------------
@@ -34,7 +34,7 @@ void window_resize_callback(GLFWwindow* window, int new_width, int new_height) {
     if (Core.window == window) Core.width = new_width, Core.height = new_height;
 
     #ifdef DRACARYS_USE_OPENGL
-    glViewport(0, 0, Core.width, Core.height);
+    dracarys_glr_viewport(0, 0, Core.width, Core.height);
     #endif
 
     #if defined(PLATFORM_WEB) && defined(DRACARYS_USE_OPENGL)
@@ -50,8 +50,25 @@ int dracarys_platform_initialize(const char* title, int width, int height) {
     Core.width = width;
     Core.height = height;
 
+    #if defined(DRACARYS_LOG_WRITE) && !defined(PLATFORM_WEB)
+    Core.log_file = fopen("dracarys_log.txt", "w");
+    if (Core.log_file == NULL) {
+        DRACARYS_UTILITY_LOG_ERROR("UNABLE TO CREATE/OPEN LOG FILE\n");
+    } else {
+        if (DRACARYS_UTILITY_LOG_SET_FILE(Core.log_file, DRACARYS_UTILITY_LOG_TRACE_LEVEL) < 0) {
+            DRACARYS_UTILITY_LOG_ERROR("UNABLE TO SET LOG FILE CALLBACK\n");
+            fclose(Core.log_file);
+            Core.log_file = NULL;
+        } else {
+            DRACARYS_UTILITY_LOG_INFO("Dracarys log file set\n");
+        }
+    }
+    #else
+    Core.log_file = NULL;
+    #endif
+
     if (glfwInit() == GLFW_FALSE) {
-        printf("GLFW UNABLE TO BE INITIALIZED.");
+        DRACARYS_UTILITY_LOG_ERROR("GLFW UNABLE TO INITIALIZE\n");
         return DRACARYS_INIT_FAILURE;
     }
 
@@ -64,26 +81,27 @@ int dracarys_platform_initialize(const char* title, int width, int height) {
     Core.window = glfwCreateWindow(Core.width, Core.height, Core.title, NULL, NULL);
     if (Core.window == NULL) {
         glfwTerminate();
-        printf("Unable to create window.");
+        DRACARYS_UTILITY_LOG_ERROR("WINDOW NOT ABLE TO BE CREATED\n");
         return DRACARYS_INIT_FAILURE;
     }
 
     glfwMakeContextCurrent(Core.window);
 
-    #ifdef DRACARYS_USE_OPENGL
+    #if defined(DRACARYS_USE_OPENGL)
+    
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        printf("Unable to load OpenGL.");
+        DRACARYS_UTILITY_LOG_ERROR("GLAD NOT LOADED\n");
         return DRACARYS_INIT_FAILURE;
     }
 
-    glViewport(0, 0, Core.width, Core.height);
+    dracarys_glr_viewport(0, 0, Core.width, Core.height);
     #endif
 
     glfwSetWindowSizeCallback(Core.window, window_resize_callback);
     glfwSetKeyCallback(Core.window, key_callback);
 
 
-    printf("Core initialized successfully.\n");
+    DRACARYS_UTILITY_LOG_INFO("Dracarys initialized successfully\n");
 
     return DRACARYS_INIT_SUCCESSFUL;
 }
@@ -112,6 +130,8 @@ void dracarys_platform_swap_buffers(void) {
 void dracarys_platform_terminate(void) {
     glfwDestroyWindow(Core.window);
     glfwTerminate();
+
+    if (Core.log_file != NULL) fclose(Core.log_file);
 }
 
 int dracarys_platform_is_key_pressed(enum dracarys_keys key) {

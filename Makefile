@@ -3,6 +3,8 @@
 CC = gcc
 graphics_api = DRACARYS_USE_OPENGL
 platform = DRACARYS_PLATFORM_WINDOWS
+log = DRACARYS_LOG_WRITE
+
 BUILD_PATH = build
 OPT = -O0
 
@@ -21,6 +23,13 @@ $(BUILD_PATH)/dracarys_gl_buffer.o \
 $(BUILD_PATH)/dracarys_gl_clear.o \
 $(BUILD_PATH)/dracarys_gl_shader.o \
 $(BUILD_PATH)/dracarys_gl_vertex_array.o \
+$(BUILD_PATH)/log.o
+
+CUSTOM_FLAGS =  -D $(platform) -D $(graphics_api) -D LOG_USE_COLOR
+
+ifeq ($(log), DRACARYS_LOG_WRITE)
+CUSTOM_FLAGS += -D $(log)
+endif
 
 APP_NAME = Dracarys
 APP = $(BUILD_PATH)/$(APP_NAME).exe
@@ -46,13 +55,14 @@ $(APP): $(OBJ)
 
 $(BUILD_PATH)/%.o: %.c
 	echo --Compiling: $< to $@--
-	gcc -c $< -D $(platform) -D $(graphics_api) $(HEADERS) -o $@
+	gcc -c $< $(CUSTOM_FLAGS) $(HEADERS) -o $@
 
 endif
 
 ifeq ($(platform), DRACARYS_PLATFORM_WEB)
 
 SHADER_PATH = shaders/QuadWeb.txt
+WEB_PRELOAD = --preload-file $(SHADER_PATH) 
 
 LIBS = -Lsrc/extern \
 -lglfw3 \
@@ -68,11 +78,11 @@ all: $(APP_NAME).html
 
 $(APP_NAME).html: $(OBJ)
 	echo --FINALIZING WEB BUILD--
-	emcc -o $(BUILD_PATH)/$(APP_NAME).html --preload-file $(SHADER_PATH) $(OBJ) $(FLAGS) $(WEB_FLAGS) $(LIBS) 
+	emcc -o $(BUILD_PATH)/$(APP_NAME).html $(WEB_PRELOAD) $(OBJ) $(FLAGS) $(WEB_FLAGS) $(LIBS) 
 
 $(BUILD_PATH)/%.o: %.c
 	echo --COMPILING SRC--
-	emcc -c $< -D $(platform) -D $(graphics_api) $(HEADERS) 
+	emcc -c $< $(CUSTOM_FLAGS) $(HEADERS) 
 	mv *.o $(BUILD_PATH)
 
 endif

@@ -12,3 +12,7 @@ void dracarys_glr_draw_elements(enum dracarys_glr_draw_type mode, unsigned int c
     assert(count > 0);
     glDrawElements(mode, count, type, indices);
 }
+
+void dracarys_glr_viewport(int x, int y, int width, int height) {
+    glViewport(0, 0, width, height);
+}
