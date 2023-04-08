@@ -161,43 +161,43 @@ int dracarys_platform_get_window_status(void);
 #ifndef DRACARYS_NO_CUSTOM_MAIN
 
 #ifdef DRACARYS_PLATFORM_WINDOWS
-#define DRACARYS_GAME(start, update, destroy, container, title, width, height) \
-int main(void) {                                                                \
-    container c;                                                                \
+#define DRACARYS_GAME(start, update, destroy, container, title, width, height)               \
+int main(void) {                                                                             \
+    container c;                                                                             \
     if (dracarys_platform_initialize(title, width, height) == DRACARYS_INIT_FAILURE) {       \
-        return -1;                                                              \
-    }                                                                           \
-    start(&c);                                                                  \
-    while (dracarys_platform_update()) {                                                \
-        update(&c);                                                             \
+        return -1;                                                                           \
+    }                                                                                        \
+    start(&c);                                                                               \
+    while (dracarys_platform_update()) {                                                     \
+        update(&c);                                                                          \
         dracarys_platform_swap_buffers();                                                    \
-    }                                                                           \
-    destroy(&c);                                                                \
+    }                                                                                        \
+    destroy(&c);                                                                             \
     dracarys_platform_terminate();                                                           \
-    return 0;                                                                   \
+    return 0;                                                                                \
 }                                                                               
 #elif defined(DRACARYS_PLATFORM_WEB) && defined(DRACARYS_USE_OPENGL) 
 #include <emscripten/emscripten.h>
 
-#define DRACARYS_GAME(start, update, destroy, container, title, width, height) \
-container c;                                                                    \
-void loop(void) {                                                               \
-    dracarys_platform_poll_events();                                                         \
-    if (dracarys_platform_get_window_status() == DRACARYS_WINDOW_CLOSED) {                            \
-        destroy(&c);                                                            \
-        dracarys_platform_terminate();                                                       \
-        emscripten_cancel_main_loop();                                          \
-    }                                                                           \
-    update(&c);                                                                 \
-    dracarys_platform_swap_buffers();                                                        \
-}                                                                               \
-int main(void) {                                                                \
-    if (dracarys_platform_initialize(title, width, height) == DRACARYS_INIT_FAILURE) {       \
-        return -1;                                                              \
-    }                                                                           \
-    start(&c);                                                                  \
-    emscripten_set_main_loop(loop, 0, 1);                                       \
-    return 0;                                                                   \
+#define DRACARYS_GAME(start, update, destroy, container, title, width, height)                \
+container c;                                                                                  \
+void loop(void) {                                                                             \
+    dracarys_platform_poll_events();                                                          \
+    if (dracarys_platform_get_window_status() == DRACARYS_WINDOW_CLOSED) {                    \
+        destroy(&c);                                                                          \
+        dracarys_platform_terminate();                                                        \
+        emscripten_cancel_main_loop();                                                        \
+    }                                                                                         \
+    update(&c);                                                                               \
+    dracarys_platform_swap_buffers();                                                         \
+}                                                                                             \
+int main(void) {                                                                              \
+    if (dracarys_platform_initialize(title, width, height) == DRACARYS_INIT_FAILURE) {        \
+        return -1;                                                                            \
+    }                                                                                         \
+    start(&c);                                                                                \
+    emscripten_set_main_loop(loop, 0, 1);                                                     \
+    return 0;                                                                                 \
 }        
 
 #endif
