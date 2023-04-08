@@ -28,7 +28,7 @@ At the moment, I do not want to focus on supporting literally every platform and
 - [ ] Model loading. Maybe not assimp this time? (OBJ, STL, and maybe FBX) 
 - [ ] GUI - Nuklear, or maybe a custom implementation?
 - [ ] Study some more graphics programming!
-- [ ] Logging library. Gotta be better than a `printf` right?
+- [X] Logging library. Gotta be better than a `printf` right?
 - [ ] 3D Flappy bird with actual 3D models, sound effects, UI, etc. Should be playable on the web too. This is when my work comes to fruition.
 
 ## Planned for the future
