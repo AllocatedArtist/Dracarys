@@ -20,7 +20,7 @@ At the moment, I do not want to focus on supporting literally every platform and
 > Dracarys supports the platforms I have access to at the moment which is Windows and the Web. This doesn't mean I'll ditch other platforms, because I might be interested in Mac and Linux in the future. 
 
 ## ROADMAP
-- [ ] Loading textures. Probably integrate stb libraries.
+- [X] Loading textures. Probably integrate stb libraries.
 - [ ] Using shader uniforms.
 - [ ] Custom math library 
 - [ ] Camera system
