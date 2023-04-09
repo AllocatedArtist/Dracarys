@@ -1,12 +1,17 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aTexCoords;
 
 out vec3 color;
+out vec2 tex_coords;
+
+uniform vec2 offset_pos;
 
 void main() {
     color = aColor;
-    gl_Position = vec4(aPos, 1.0);
+    tex_coords = aTexCoords;
+    gl_Position = vec4((aPos * 0.5) + vec3(offset_pos, 0.0), 1.0);
 }
 
 $
@@ -14,7 +19,10 @@ $
 out vec4 fragColor;
 
 in vec3 color;
+in vec2 tex_coords;
+
+uniform sampler2D texture0;
 
 void main() {
-    fragColor = vec4(color, 1.0);
+    fragColor = texture(texture0, tex_coords) * vec4(color, 1.0);
 }

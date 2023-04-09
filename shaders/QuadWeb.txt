@@ -1,15 +1,19 @@
 #version 300 es
 in vec3 aPos;
 in vec3 aColor;
+in vec2 aTexCoords;
 
 out vec3 color;
+
+out vec2 tex_coords;
 
 uniform vec2 offset_pos;
 
 void main() {
-    gl_Position = vec4((aPos * 0.1) + vec3(offset_pos, 0.0), 1.0);
+    gl_Position = vec4((aPos * 0.8) + vec3(offset_pos, 0.0), 1.0);
 
     color = aColor;
+    tex_coords = aTexCoords;
 }
 
 $#version 300 es
@@ -18,7 +22,12 @@ precision mediump float;
 out vec4 fragColor;
 
 in vec3 color;
+in vec2 tex_coords;
+
+uniform sampler2D texture0;
+uniform sampler2D texture1;
 
 void main() {
-    fragColor = vec4(color, 1.0);
+    fragColor = mix(mix(texture(texture0, tex_coords), texture(texture1, tex_coords), 0.75), vec4(color, 1.0), 0.3);
+    //fragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

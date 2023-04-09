@@ -1,3 +1,6 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include "../header/Dracarys/extern/stb_image.h"
+
 #include "../header/Dracarys/dracarys_utility.h"
 
 #include <stdlib.h>
@@ -61,4 +64,59 @@ void dracarys_utility_shader_files_delete(dracarys_utility_shader_files_t* files
         free(files->vertex_shader);
     if (files->fragment_shader != NULL) 
         free(files->fragment_shader);
+}
+
+void dracarys_utility_image_set_flip_on_load(int flip) {
+    stbi_set_flip_vertically_on_load(flip);
+}
+
+dracarys_utility_image_t dracarys_utility_image_load(const char* filename) {
+    int width = 0, height = 0, nr_channels = 0;
+    unsigned char* data = stbi_load(filename, &width, &height, &nr_channels, 0);
+
+    if (data == NULL) {
+        DRACARYS_UTILITY_LOG_ERROR("COULD NOT LOAD IMAGE [%s]\n", filename);
+        return (dracarys_utility_image_t) { .data = NULL, .format = DRACARYS_UTILITY_PIXEL_RED, .width = width, .height = height };
+    } 
+
+    enum dracarys_utility_pixel_format format = DRACARYS_UTILITY_PIXEL_RED;
+
+    if (nr_channels == 1) {
+        format = DRACARYS_UTILITY_PIXEL_RED;
+    } else if (nr_channels == 3) {
+        format = DRACARYS_UTILITY_PIXEL_RGB;
+    } else if (nr_channels == 4) {
+        format = DRACARYS_UTILITY_PIXEL_RGBA;
+    }
+
+    DRACARYS_UTILITY_LOG_INFO("Loaded %dx%d image successfully [%s]\n", width, height, filename);
+
+    return (dracarys_utility_image_t) { .data = data, .format = format, .width = width, .height = height };
+}
+
+dracarys_utility_image_t dracarys_utility_image_load_from_memory(const unsigned char** buffer, int data_size) {
+    int width = 0, height = 0, nr_channels = 0;
+    unsigned char* data = stbi_load_from_memory((const unsigned char*)&buffer, data_size, &width, &height, &nr_channels, 0);   
+
+    if (data == NULL) {
+        DRACARYS_UTILITY_LOG_ERROR("COULD NOT LOAD IMAGE FROM MEMORY\n");
+        return (dracarys_utility_image_t) { .data = NULL, .format = DRACARYS_UTILITY_PIXEL_RED, .width = width, .height = height };
+    } 
+
+    enum dracarys_utility_pixel_format format = DRACARYS_UTILITY_PIXEL_RED;
+
+    if (nr_channels == 1) {
+        format = DRACARYS_UTILITY_PIXEL_RED;
+    } else if (nr_channels == 3) {
+        format = DRACARYS_UTILITY_PIXEL_RGB;
+    } else if (nr_channels == 4) {
+        format = DRACARYS_UTILITY_PIXEL_RGBA;
+    }
+
+    DRACARYS_UTILITY_LOG_INFO("Loaded %dx%d image from memory successfully\n", width, height);
+    return (dracarys_utility_image_t) { .data = data, .format = format, .width = width, .height = height };
+}
+
+void dracarys_utility_image_delete(dracarys_utility_image_t* image) {
+    if (image->data != NULL) stbi_image_free(image->data);
 }

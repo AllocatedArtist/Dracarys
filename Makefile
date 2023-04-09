@@ -24,6 +24,7 @@ $(BUILD_PATH)/dracarys_gl_clear.o \
 $(BUILD_PATH)/dracarys_gl_shader.o \
 $(BUILD_PATH)/dracarys_gl_vertex_array.o \
 $(BUILD_PATH)/dracarys_gl_uniform.o \
+$(BUILD_PATH)/dracarys_gl_texture.o \
 $(BUILD_PATH)/log.o \
 
 CUSTOM_FLAGS =  -D $(platform) -D $(graphics_api) -D LOG_USE_COLOR
@@ -63,7 +64,7 @@ endif
 ifeq ($(platform), DRACARYS_PLATFORM_WEB)
 
 SHADER_PATH = shaders/QuadWeb.txt
-WEB_PRELOAD = --preload-file $(SHADER_PATH) 
+WEB_PRELOAD = --preload-file $(SHADER_PATH) --preload-file res/scales_texture.jpg --preload-file res/dragon.png
 
 LIBS = -Lsrc/extern \
 -lglfw3 \

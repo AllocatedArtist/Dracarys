@@ -51,5 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-#Logging
+#Custom folders/files
 dracarys_log.txt
+renderdoc

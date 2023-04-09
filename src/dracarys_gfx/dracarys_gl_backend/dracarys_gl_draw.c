@@ -10,7 +10,7 @@ void dracarys_glr_draw_arrays(enum dracarys_glr_draw_type type, unsigned int cou
 
 void dracarys_glr_draw_elements(enum dracarys_glr_draw_type mode, unsigned int count, enum dracarys_glr_attribute_type type, const void* indices) {
     assert(count > 0);
-    glDrawElements(mode, count, type, indices);
+    glDrawElements((GLenum)mode, count, type, indices);
 }
 
 void dracarys_glr_viewport(int x, int y, int width, int height) {

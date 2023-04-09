@@ -47,6 +47,9 @@ dracarys_glr_vertex_attribute_t dracarys_glr_vertex_attribute_create(unsigned in
         case DRACARYS_GLR_ATTRIBUTE_TYPE_UNSIGNED_SHORT:
             datatype = sizeof(unsigned short);
             break;
+        case DRACARYS_GLR_ATTRIBUTE_TYPE_DOUBLE:
+            datatype = sizeof(double);
+            break;
     };
     
     return (dracarys_glr_vertex_attribute_t) {

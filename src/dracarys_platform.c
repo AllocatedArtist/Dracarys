@@ -97,8 +97,10 @@ int dracarys_platform_initialize(const char* title, int width, int height) {
         DRACARYS_UTILITY_LOG_ERROR("GLAD NOT LOADED\n");
         return DRACARYS_INIT_FAILURE;
     }
-
+    
     dracarys_glr_viewport(0, 0, Core.width, Core.height);
+
+    dracarys_utility_image_set_flip_on_load(DRACARYS_YES_FLIP_IMAGE);
     #endif
 
     glfwSetWindowSizeCallback(Core.window, window_resize_callback);
